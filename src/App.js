@@ -16,6 +16,7 @@ const App = () => {
         username,
         password,
       });
+      movieService.setToken(user.token);
       setUser(user);
       setPassword('');
       setUsername('');
