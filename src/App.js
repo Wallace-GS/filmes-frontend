@@ -9,6 +9,21 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    movieService.getAll().then((movies) => {
+      setMovies(movies);
+    });
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      movieService.setToken(user.token);
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -16,6 +31,8 @@ const App = () => {
         username,
         password,
       });
+
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
       movieService.setToken(user.token);
       setUser(user);
       setPassword('');
@@ -25,11 +42,10 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    movieService.getAll().then((movies) => {
-      setMovies(movies);
-    });
-  }, []);
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedUser');
+    setUser(null);
+  };
 
   if (user === null) {
     return (
@@ -66,6 +82,7 @@ const App = () => {
       {movies.map((movie) => (
         <Movie key={movie.id} movie={movie} />
       ))}
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
