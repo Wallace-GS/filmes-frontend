@@ -6,5 +6,5 @@
 
 - [x] Jest testing enviornment set up
 - [x] Set up server
-- [x] Implemented RESTful APIs for users and list of movies
+- [x] Implemented RESTful APIs for login, users and list of movies
 - [ ] Built UI with React (In progress)
