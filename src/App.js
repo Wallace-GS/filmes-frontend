@@ -5,6 +5,12 @@ import loginService from './services/login';
 
 const App = () => {
   const [movies, setMovies] = useState([]);
+  const [newMovie, setNewMovie] = useState({
+    title: '',
+    genre: '',
+    score: 0,
+    userId: '',
+  });
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -24,6 +30,31 @@ const App = () => {
     }
   }, []);
 
+  const addMovie = (e) => {
+    e.preventDefault();
+    const movie = {
+      title: newMovie.title,
+      genre: newMovie.genre,
+      score: newMovie.score,
+      userId: user.id,
+    };
+
+    movieService.create(movie).then((returnedMovie) => {
+      setMovies(movies.concat(returnedMovie));
+      alert(`${movie.title} has been added to backlog.`);
+      setNewMovie({
+        title: '',
+        genre: '',
+        score: 0,
+        userId: '',
+      });
+    });
+  };
+
+  const handleNewMovies = (e) => {
+    setNewMovie({ ...newMovie, [e.target.name]: e.target.value });
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -38,7 +69,7 @@ const App = () => {
       setPassword('');
       setUsername('');
     } catch (exception) {
-      console.log('Wrong credentials');
+      alert('Wrong username or password.');
     }
   };
 
@@ -79,6 +110,33 @@ const App = () => {
   return (
     <div>
       <h2>Hello, {user.name}. Here is the family's current movie backlog:</h2>
+      <form onSubmit={addMovie}>
+        <div>
+          Title:
+          <input
+            value={newMovie.title}
+            name="title"
+            onChange={handleNewMovies}
+          />
+        </div>
+        <div>
+          Genre:
+          <input
+            value={newMovie.genre}
+            name="genre"
+            onChange={handleNewMovies}
+          />
+        </div>
+        <div>
+          IMdB Rating:
+          <input
+            value={newMovie.score}
+            name="score"
+            onChange={handleNewMovies}
+          />
+        </div>
+        <button type="submit">Add Movie</button>
+      </form>
       {movies.map((movie) => (
         <Movie key={movie.id} movie={movie} />
       ))}
