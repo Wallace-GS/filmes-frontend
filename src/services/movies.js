@@ -21,4 +21,15 @@ const create = async (newObject) => {
   return response.data;
 };
 
-export default { getAll, create, setToken };
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const deleteUrl = baseUrl + '/' + id;
+
+  const response = await axios.delete(deleteUrl, config);
+  return response.data;
+};
+
+export default { getAll, create, remove, setToken };

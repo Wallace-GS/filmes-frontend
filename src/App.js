@@ -31,7 +31,15 @@ const App = () => {
 
   const addMovie = (movie) => {
     movieService.create(movie).then((returnedMovie) => {
-      setMovies((movies) => [...movies, returnedMovie]);
+      setMovies(movies.concat(returnedMovie));
+    });
+    window.location.reload();
+  };
+
+  const removeMovie = (id) => {
+    const updatedMovies = movies.filter((movie) => movie.id !== id);
+    movieService.remove(id).then(() => {
+      setMovies(updatedMovies);
     });
   };
 
@@ -76,7 +84,7 @@ const App = () => {
   return (
     <div>
       <div>
-        <Greeting name={user.name} />
+        <Greeting name={user.name} movies={movies} />
       </div>
       <div>
         <Togglable buttonLabel="New Movie">
@@ -85,7 +93,7 @@ const App = () => {
       </div>
       <ul>
         {movies.map((movie) => (
-          <Movie key={movie.id} movie={movie} />
+          <Movie key={movie.id} movie={movie} handleRemove={removeMovie} />
         ))}
       </ul>
       <div>
